@@ -3,36 +3,35 @@ import org.testng.annotations.Test
 import kotlin.math.max
 import kotlin.math.min
 
-
-class Tests {
-    @Test
-    fun day1part1() {
-        assertEquals(Day1.part1("inputs/input_d1_example.txt"), 24000)
-    }
-
-    @Test
-    fun day1part2() {
-        assertEquals(Day1.part2("inputs/input_d1_example.txt"), 45000)
-    }
-}
-
-class Solutions {
-    @Test
-    fun day1part1() {
-        Timer.measure {
-            println("Max calories on single elf: ${Day1.part1("inputs/input_d1.txt")}")
-        }
-    }
-
-    @Test
-    fun day1part2() {
-        Timer.measure {
-            println("Total top 3 calories on elfs: ${Day1.part2("inputs/input_d1.txt")}")
-        }
-    }
-}
-
 object Day1 {
+    class Tests {
+        @Test
+        fun part1() {
+            assertEquals(part1("inputs/day1_example.txt"), 24000)
+        }
+
+        @Test
+        fun part2() {
+            assertEquals(part2("inputs/day1_example.txt"), 45000)
+        }
+    }
+
+    class Solutions {
+        @Test
+        fun part1() {
+            Timer.measure {
+                println("Max calories on elf: ${part1("inputs/day1.txt")}")
+            }
+        }
+
+        @Test
+        fun part2() {
+            Timer.measure {
+                println("Total top 3 calories on elfs: ${part2("inputs/day1.txt")}")
+            }
+        }
+    }
+
     fun part1(fileName: String): Int {
         return findLoadedElfs(fileName, listOf(0)).sum()
     }
