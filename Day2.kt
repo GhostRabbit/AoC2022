@@ -6,7 +6,6 @@ object Day2 {
         @Test
         fun part1() {
             assertEquals(part1("inputs/day2_example.txt"), 15)
-            assertEquals(part1("inputs/day2_example.txt"), 15)
         }
 
         @Test
