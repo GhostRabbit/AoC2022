@@ -18,14 +18,14 @@ object Day3 {
         @Test
         fun part1() {
             Timer.measure {
-                println("Total priorities: ${part1("inputs/day3.txt")}")
+                println("Total priorities for leftover items: ${part1("inputs/day3.txt")}")
             }
         }
 
         @Test
         fun part2() {
             Timer.measure {
-                println("New total score: ${part2("inputs/day3.txt")}")
+                println("Total priorities for badges: ${part2("inputs/day3.txt")}")
             }
         }
     }
