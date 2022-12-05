@@ -21,41 +21,32 @@ object Day4 {
     fun part1(fileName: String): Int {
         return Inputs.readLines(fileName)
             .map { assignmentsOf(it) }
-            .map { countContained(it) }
-            .sum()
+            .count { it[0] isContainedByOrContains it[1] }
     }
 
     fun part2(fileName: String): Int {
         return Inputs.readLines(fileName)
             .map { assignmentsOf(it) }
-            .map { countOverLapping(it) }
-            .sum()
+            .count { it[0] isOverlapping it[1] }
     }
 
-
-    private fun countContained(assignments: List<Pair<Int, Int>>): Int =
-        if (assignments[0] isContainedByOrContains assignments[1]) 1 else 0
-
-    private infix fun Pair<Int, Int>.isContainedByOrContains(that: Pair<Int, Int>): Boolean =
+    private infix fun IntRange.isContainedByOrContains(that: IntRange): Boolean =
         this isContainedBy that || that isContainedBy this
 
-    private infix fun Pair<Int, Int>.isContainedBy(that: Pair<Int, Int>) =
-        this.first <= that.first && this.second >= that.second
+    private infix fun IntRange.isContainedBy(that: IntRange) =
+        this.first <= that.first && this.last >= that.last
 
-    private fun countOverLapping(assignments: List<Pair<Int, Int>>) =
-        if (assignments[0] isOverlapping assignments[1]) 1 else 0
-
-    private infix fun Pair<Int, Int>.isOverlapping(that: Pair<Int, Int>): Boolean =
+    private infix fun IntRange.isOverlapping(that: IntRange): Boolean =
         this overlaps that || that overlaps this
 
-    private infix fun Pair<Int, Int>.overlaps(that: Pair<Int, Int>): Boolean =
-        this.first in that.first..that.second || this.second in that.first..that.second
+    private infix fun IntRange.overlaps(that: IntRange): Boolean =
+        this.first in that || this.last in that
 
-    private fun assignmentsOf(line: String): List<Pair<Int, Int>> {
+    private fun assignmentsOf(line: String): List<IntRange> {
         return line
             .split(",", "-")
             .chunked(2)
-            .map { Pair(it[0].toInt(), it[1].toInt()) }
+            .map { it[0].toInt() .. it[1].toInt() }
     }
 }
 
