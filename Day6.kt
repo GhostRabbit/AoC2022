@@ -46,7 +46,7 @@ object Day6 {
     private fun findStartOfMessage(input: String): Int = findDistinctOfLength(input, 14)
 
     private fun String.isNotDistinct(): Boolean {
-        return chars().asSequence().toSet().size != length
+        return toSet().size != length
     }
 
     fun part2(fileName: String): Int {
