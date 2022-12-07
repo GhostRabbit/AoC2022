@@ -1,4 +1,3 @@
-import com.sun.org.apache.bcel.internal.generic.NOP
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
@@ -21,19 +20,27 @@ object Day7 {
     }
 
     class FileSystem {
-        val currentDir = ArrayDeque(listOf(Dir("")))
+        val root = Dir("/")
+        private val currentDir = ArrayDeque(listOf(root))
         fun cd(name: String) {
             when (name) {
+                "/" -> {
+                    currentDir.clear()
+                    currentDir.addLast(root)
+                }
+
                 ".." -> currentDir.removeLast()
+
                 else -> {
                     val dir = currentDir.last().findDir(name)
-                    if (dir == null) {
-                        val newDir = Dir(name)
-                        currentDir.last().add(newDir)
-                        currentDir.addLast(newDir)
-                    } else {
-                        currentDir.addLast(dir)
-                    }
+                    currentDir.addLast(
+                        if (dir != null) dir
+                        else {
+                            val newDir = Dir(name)
+                            currentDir.last().add(newDir)
+                            newDir
+                        }
+                    )
                 }
             }
         }
@@ -50,30 +57,23 @@ object Day7 {
         data class File(val size: Long, val name: String)
 
         data class Dir(val name: String) {
-            val dirs = ArrayList<Dir>()
-            val files = ArrayList<File>()
-            fun findDir(name: String): Dir? {
-                return dirs.find { it.name == name }
-            }
+            private val dirs = ArrayList<Dir>()
+            private val files = ArrayList<File>()
 
+            fun findDir(name: String): Dir? = dirs.find { it.name == name }
             fun add(dir: Dir) = dirs.add(dir)
-
+            fun add(file: Day7.FileSystem.File) = files.add(file)
             fun size(): Long = dirs.sumOf { it.size() } + files.sumOf { it.size }
 
             fun addSizeTo(sizes: MutableList<Long>) {
                 sizes.add(size())
                 dirs.forEach { it.addSizeTo(sizes) }
             }
-
-            fun add(file: Day7.FileSystem.File) {
-                files.add(file)
-            }
         }
     }
 
-    fun part1(fileName: String): Long {
-        return fileSystemFrom(Inputs.readString(fileName).lines()).dirSizes().filter { it <= 100000 }.sum()
-    }
+    fun part1(fileName: String): Long =
+        fileSystemFrom(Inputs.readString(fileName).lines()).dirSizes().filter { it <= 100_000 }.sum()
 
     private fun fileSystemFrom(lines: List<String>): FileSystem {
         val fs = FileSystem()
@@ -97,9 +97,9 @@ object Day7 {
 
     fun part2(fileName: String): Long {
         val fs = fileSystemFrom(Inputs.readString(fileName).lines())
-        val used = fs.currentDir.first().size()
-        val free = 70000000 - used
-        val needed = 30000000
+        val used = fs.root.size()
+        val free = 70_000_000 - used
+        val needed = 30_000_000
         val toDelete = needed - free
         return fs.dirSizes().filter { it >= toDelete }.min()
     }
