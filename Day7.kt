@@ -21,23 +21,23 @@ object Day7 {
 
     class FileSystem {
         val root = Dir("/")
-        private val currentDir = ArrayDeque(listOf(root))
+        private val workingDir = ArrayDeque(listOf(root))
         fun cd(name: String) {
             when (name) {
                 "/" -> {
-                    currentDir.clear()
-                    currentDir.addLast(root)
+                    workingDir.clear()
+                    workingDir.addLast(root)
                 }
 
-                ".." -> currentDir.removeLast()
+                ".." -> workingDir.removeLast()
 
                 else -> {
-                    val dir = currentDir.last().findDir(name)
-                    currentDir.addLast(
+                    val dir = workingDir.last().findDir(name)
+                    workingDir.addLast(
                         if (dir != null) dir
                         else {
                             val newDir = Dir(name)
-                            currentDir.last().add(newDir)
+                            workingDir.last().add(newDir)
                             newDir
                         }
                     )
@@ -47,12 +47,12 @@ object Day7 {
 
         fun dirSizes(): List<Long> {
             val sizes = mutableListOf<Long>()
-            currentDir.first().addSizeTo(sizes)
+            workingDir.first().addSizeTo(sizes)
             return sizes
         }
 
-        fun mkdir(name: String) = currentDir.last().add(Dir(name))
-        fun mkFile(size: Long, name: String) = currentDir.last().add(File(size, name))
+        fun mkdir(name: String) = workingDir.last().add(Dir(name))
+        fun mkFile(size: Long, name: String) = workingDir.last().add(File(size, name))
 
         data class File(val size: Long, val name: String)
 

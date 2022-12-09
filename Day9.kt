@@ -19,7 +19,7 @@ object Day9 {
         fun part1() = Timer.measure { println("Tail moves: ${part1("inputs/day9.txt")}") }
 
         @Test
-        fun part2() = Timer.measure { println("Full tail moves: ${part2("inputs/day9.txt")}") }
+        fun part2() = Timer.measure { println("Tail moves: ${part2("inputs/day9.txt")}") }
     }
 
     class Rope() {
@@ -30,23 +30,20 @@ object Day9 {
             rope = MutableList(length) { Pair(0, 0) }
         }
 
-        fun right() {
-            rope[0] = Pair(rope[0].first, rope[0].second + 1)
-            follow()
+        fun move(dir: String, steps: Int) {
+            when (dir) {
+                "R" -> repeat(steps) { move(0, 1) }
+
+                "L" -> repeat(steps) { move(0, -1) }
+
+                "U" -> repeat(steps) { move(1, 0) }
+
+                "D" -> repeat(steps) { move(-1, 0) }
+            }
         }
 
-        fun left() {
-            rope[0] = Pair(rope[0].first, rope[0].second - 1)
-            follow()
-        }
-
-        fun up() {
-            rope[0] = Pair(rope[0].first + 1, rope[0].second)
-            follow()
-        }
-
-        fun down() {
-            rope[0] = Pair(rope[0].first - 1, rope[0].second)
+        private fun move(dy: Int, dx: Int) {
+            rope[0] = Pair(rope[0].first + dy, rope[0].second + dx)
             follow()
         }
 
@@ -55,37 +52,18 @@ object Day9 {
                 val a = rope[i - 1]
                 val b = rope[i]
 
-                // diag
-                if (abs(a.first - b.first) == 2 && abs(a.second - b.second) == 2) {
-                    moveSection(i, (a.first + b.first) / 2, (a.second + b.second) / 2)
-                } else {
-                    // up
-                    if (a.first - b.first == 2) moveSection(i, b.first + 1, a.second)
-                    // down
-                    if (a.first - b.first == -2) moveSection(i, b.first - 1, a.second)
-                    // left
-                    if (a.second - b.second == 2) moveSection(i, a.first, b.second + 1)
-                    // right
-                    if (a.second - b.second == -2) moveSection(i, a.first, b.second - 1)
-                }
+                val upDown = abs(a.first - b.first) == 2
+                val leftRight = abs(a.second - b.second) == 2
+
+                if (upDown && leftRight) moveSection(i, (a.first + b.first) / 2, (a.second + b.second) / 2)
+                else if (upDown) moveSection(i, (a.first + b.first) / 2, a.second)
+                else if (leftRight) moveSection(i, a.first, (a.second + b.second) / 2)
             }
         }
 
         private fun moveSection(i: Int, y: Int, x: Int) {
             rope[i] = Pair(y, x)
             if (i == rope.size - 1) tailPositions.add(rope[i])
-        }
-
-        fun move(dir: String, steps: Int) {
-            when (dir) {
-                "R" -> repeat(steps) { right() }
-
-                "L" -> repeat(steps) { left() }
-
-                "U" -> repeat(steps) { up() }
-
-                "D" -> repeat(steps) { down() }
-            }
         }
     }
 
