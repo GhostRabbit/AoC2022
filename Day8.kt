@@ -1,7 +1,6 @@
 import org.testng.Assert.assertEquals
 import org.testng.annotations.Test
 
-
 object Day8 {
     class Tests {
         @Test
@@ -11,7 +10,7 @@ object Day8 {
         fun part2() = assertEquals(part2("inputs/day8_example.txt"), 8)
 
         @Test
-        fun part2_solution() = assertEquals(part2("inputs/day8.txt"), 157320)
+        fun part2Solution() = assertEquals(part2("inputs/day8.txt"), 157320)
     }
 
     class Solutions {
@@ -25,7 +24,7 @@ object Day8 {
     fun part1(fileName: String): Int {
         val grid = Inputs.readString(fileName).lines()
         val visible = visibleGrid(grid)
-        return visible.sumOf { it.map { if (it) 1 else 0 }.sum() }
+        return visible.sumOf { it.count { it } }
     }
 
     private fun visibleGrid(grid: List<String>): Array<BooleanArray> {
