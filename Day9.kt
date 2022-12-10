@@ -22,12 +22,14 @@ object Day9 {
         fun part2() = Timer.measure { println("Tail moves: ${part2("inputs/day9.txt")}") }
     }
 
+    data class Pos(val y:Int, val x:Int)
+
     class Rope() {
-        lateinit var rope: MutableList<Pair<Int, Int>>
-        val tailPositions = mutableSetOf(Pair(0, 0))
+        lateinit var knots: MutableList<Pos>
+        val tailPositions = mutableSetOf(Pos(0, 0))
 
         constructor(length: Int) : this() {
-            rope = MutableList(length) { Pair(0, 0) }
+            knots = MutableList(length) { Pos(0, 0) }
         }
 
         fun move(dir: String, steps: Int) {
@@ -43,27 +45,28 @@ object Day9 {
         }
 
         private fun move(dy: Int, dx: Int) {
-            rope[0] = Pair(rope[0].first + dy, rope[0].second + dx)
+            knots[0] = Pos(knots.first().y + dy, knots.first().x + dx)
             follow()
         }
 
         private fun follow() {
-            for (i in 1 until rope.size) {
-                val a = rope[i - 1]
-                val b = rope[i]
+            for (i in 1 until knots.size) {
+                val a = knots[i - 1]
+                val b = knots[i]
 
-                val upDown = abs(a.first - b.first) == 2
-                val leftRight = abs(a.second - b.second) == 2
+                val upDown = abs(a.y - b.y) == 2
+                val leftRight = abs(a.x - b.x) == 2
 
-                if (upDown && leftRight) moveSection(i, (a.first + b.first) / 2, (a.second + b.second) / 2)
-                else if (upDown) moveSection(i, (a.first + b.first) / 2, a.second)
-                else if (leftRight) moveSection(i, a.first, (a.second + b.second) / 2)
+                if (upDown && leftRight) moveKnot(i, (a.y + b.y) / 2, (a.x + b.x) / 2)
+                else if (upDown) moveKnot(i, (a.y + b.y) / 2, a.x)
+                else if (leftRight) moveKnot(i, a.y, (a.x + b.x) / 2)
+                else break // No more movement
             }
         }
 
-        private fun moveSection(i: Int, y: Int, x: Int) {
-            rope[i] = Pair(y, x)
-            if (i == rope.size - 1) tailPositions.add(rope[i])
+        private fun moveKnot(i: Int, y: Int, x: Int) {
+            knots[i] = Pos(y, x)
+            if (i == knots.size - 1) tailPositions.add(knots[i])
         }
     }
 
